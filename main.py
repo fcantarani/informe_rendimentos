@@ -86,7 +86,7 @@ def enviar_emails(files: list[Path] | None = None) -> None:
 
     for pdf in files:
         id_number = re.sub(r"\D", "", pdf.stem)  # strip non-digits
-        account = db.buscar_correntista(id_number)
+        account = db.get_account(id_number)
 
         if not account:
             logging.warning("[N/F] %s — not found in Oracle", id_number)

@@ -113,11 +113,12 @@ class OracleDB:
         logging.warning("[DB] connection failure.")
         return False
 
-    def buscar_correntista(self, inscricao: str) -> dict | None:
+    def get_account(self, registration: str) -> dict | None:
         """
         Retrieve NAME and EMAIL of an account holder by normalized CPF/CNPJ.
-        `inscricao` must contain digits only (no '.', '/', '-').
+        `registration` must contain digits only (no '.', '/', '-').
         Returns first matching record or None.
-        """        sql = "SELECT NOME, EMAIL FROM MATERA_CORRENTISTAS WHERE INSCRICAO = :1"
-        rows = self.executar(sql, [inscricao])
+        """
+        sql = "SELECT NOME, EMAIL FROM MATERA_CORRENTISTAS WHERE INSCRICAO = :1"
+        rows = self.executar(sql, [registration])
         return rows[0] if rows else None
