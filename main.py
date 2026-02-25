@@ -49,7 +49,7 @@ def split_pdfs() -> list[Path]:
     for pdf in pdfs:
         logging.info("\n%s", '─' * 60)
         resultado = processor.process(pdf)
-        arquivos_gerados.extend(resultado.arquivos_gerados)
+        arquivos_gerados.extend(resultado.generated_files)
         logging.info("  Resumo: %d páginas → %d arquivos", resultado.total_pages, resultado.total_files)
 
     logging.info("\n%s", '═' * 60)
