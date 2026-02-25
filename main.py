@@ -1,12 +1,12 @@
 """
 main.py
 -------
-Entry point for the application.
+Ponto de entrada da aplicação.
 
-Usage:
-  python main.py --split               # split PDFs in input/ folder
-  python main.py --send                # send emails for PDFs in output/
-  python main.py --split --send        # perform both steps
+Uso:
+  python main.py --split               # dividir PDFs na pasta input/
+  python main.py --send                # enviar e-mails dos PDFs em output/
+  python main.py --split --send        # executar ambas etapas
 """
 
 import argparse
@@ -39,8 +39,8 @@ def split_pdfs() -> list[Path]:
     pdfs = sorted(INPUT_DIR.glob("*.pdf"))
 
     if not pdfs:
-        logger.warning("No PDFs found in: %s", INPUT_DIR.resolve())
-        logger.info("Place the file in the 'input/' folder and run again.")
+        logger.warning("Nenhum PDF encontrado em: %s", INPUT_DIR.resolve())
+        logger.info("Coloque o arquivo na pasta 'input/' e execute novamente.")
         sys.exit(0)
 
     processor = PDFProcessor(output_dir=OUTPUT_DIR)
@@ -50,10 +50,10 @@ def split_pdfs() -> list[Path]:
         logging.info("\n%s", '─' * 60)
         resultado = processor.process(pdf)
         arquivos_gerados.extend(resultado.arquivos_gerados)
-        logging.info("  Summary: %d pages → %d files", resultado.total_pages, resultado.total_files)
+        logging.info("  Resumo: %d páginas → %d arquivos", resultado.total_pages, resultado.total_files)
 
     logging.info("\n%s", '═' * 60)
-    logging.info("  Total  : %d file(s) in %s", len(arquivos_gerados), OUTPUT_DIR.resolve())
+    logging.info("  Total  : %d arquivo(s) em %s", len(arquivos_gerados), OUTPUT_DIR.resolve())
     return arquivos_gerados
 
 
@@ -65,7 +65,7 @@ def enviar_emails(files: list[Path] | None = None) -> None:
         files = sorted(OUTPUT_DIR.glob("*.pdf"))
 
     if not files:
-        logging.warning("No PDFs found in: %s", OUTPUT_DIR.resolve())
+        logging.warning("Nenhum PDF encontrado em: %s", OUTPUT_DIR.resolve())
         return
 
     SENT_DIR.mkdir(exist_ok=True)
@@ -81,7 +81,7 @@ def enviar_emails(files: list[Path] | None = None) -> None:
     sent_count = errors = not_found = 0  # renamed for clarity
 
     logger.info("\n%s", "═" * 60)
-    logger.info("  Sending emails for %d file(s)...", len(arquivos))
+    logger.info("  Enviando e-mails para %d arquivo(s)...", len(files))
     logger.info("%s", "═" * 60)
 
     for pdf in files:
@@ -89,7 +89,7 @@ def enviar_emails(files: list[Path] | None = None) -> None:
         account = db.get_account(id_number)
 
         if not account:
-            logging.warning("[N/F] %s — not found in Oracle", id_number)
+            logging.warning("[N/F] %s — não encontrado no Oracle", id_number)
             not_found += 1
             continue
 
@@ -97,7 +97,7 @@ def enviar_emails(files: list[Path] | None = None) -> None:
         email = account.get("email", "")
 
         if not email:
-            logging.warning("[S/E] %s — no email registered", id_number)
+            logging.warning("[S/E] %s — nenhum e-mail cadastrado", id_number)
             not_found += 1
             continue
 
@@ -113,38 +113,44 @@ def enviar_emails(files: list[Path] | None = None) -> None:
             pdf.rename(SENT_SUCCESS / pdf.name)
             sent_count += 1
         except Exception as e:
-            logging.error("[ERROR] %s: %s", pdf.name, e)
+            logging.error("[ERRO] %s: %s", pdf.name, e)
             pdf.rename(SENT_FAILURE / pdf.name)
             errors += 1
 
     logger.info("\n%s", "═" * 60)
-    logger.info("  Sent         : %d", sent_count)
-    logger.info("  Not found / no email: %d", not_found)
-    logger.info("  Errors       : %d", errors)
+    logger.info("  Enviados     : %d", sent_count)
+    logger.info("  Não encontrados / sem e-mail : %d", not_found)
+    logger.info("  Erros        : %d", errors)
 
 
 # ── Entry point ───────────────────────────────────────────────────────────────
 
 def main() -> None:
+    # configure root logger: console + file
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+        handlers=[
+            logging.StreamHandler(),
+            logging.FileHandler("informe.log", encoding="utf-8"),
+        ],
     )
     parser = argparse.ArgumentParser(
         prog="main.py",
-        description="PDF processor and email sender for income reports",
+        description="Processador de PDF e envio de e-mails para informes de rendimento",
     )
     parser.add_argument(
         "--split", "--processar",
         dest="split",
         action="store_true",
-        help="[split|processar] Split PDFs in the input/ folder by CPF/CNPJ",
+        help="[split|processar] Divide PDFs na pasta input/ por CPF/CNPJ",
     )
     parser.add_argument(
         "--send", "--enviar",
         dest="send",
         action="store_true",
-        help="[send|enviar] Send emails for documents in the output/ folder",
+        help="[send|enviar] Envia e-mails para documentos na pasta output/",
+    )
 
     args = parser.parse_args()
 
@@ -152,13 +158,13 @@ def main() -> None:
         parser.print_help()
         sys.exit(0)
 
-    arquivos: list[Path] | None = None
+    files: list[Path] | None = None
 
     if args.split:
-        arquivos = split_pdfs()
+        files = split_pdfs()
 
     if args.send:
-        enviar_emails(arquivos)
+        enviar_emails(files)
 
 
 if __name__ == "__main__":

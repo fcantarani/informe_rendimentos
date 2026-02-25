@@ -1,71 +1,73 @@
-# Informe de Rendimentos Processor
+# Processador de Informe de Rendimentos
 
-Small Python utility that splits bulk PDF reports by CPF/CNPJ and sends
-individualized documents via email (AWS SES or SMTP).
+Utilitário Python simples que divide relatórios em lote (PDF) por CPF/CNPJ
+e envia documentos individualizados por e-mail (AWS SES ou SMTP).
 
-## Features
+## Funcionalidades
 
-* PDF parsing with `PyMuPDF` and `pypdf`.
-* Identifier extraction according to business rules (CPF/CNPJ).
-* Oracle database lookup for client name/email.
-* Email delivery through AWS SES (with test mode).
-* English-only directory structure and configurable via `.env`.
+* Análise de PDF com `PyMuPDF` e `pypdf`.
+* Extração de identificadores conforme regras de negócio (CPF/CNPJ).
+* Consulta a banco Oracle para obter nome e e-mail do cliente.
+* Envio de e-mails via AWS SES (com modo de teste).
+* Estrutura de pastas em português e configurável via `.env`.
 
-## Getting started
+## Começando
 
-1. **Clone repository** and activate Python virtual environment:
+1. **Clone o repositório** e ative o ambiente virtual Python:
    ```powershell
    python -m venv .venv
    .\.venv\Scripts\Activate.ps1
    pip install -r requirements.txt
    ```
 
-2. **Configuration**
-   * Copy `.env.example` to `.env` and fill in required values.
-   * The project uses [`pydantic.BaseSettings`](config/settings.py); the
-     environment variables are loaded automatically.
-   * Required entries include Oracle credentials and AWS SES keys.
-   * Optional SMTP settings are ignored by default but available for
-     future use.
+2. **Configuração**
+   * Copie `.env.example` para `.env` e preencha os valores necessários.
+   * O projeto usa [`pydantic.BaseSettings`](config/settings.py); as
+     variáveis de ambiente são carregadas automaticamente.
+   * Campos obrigatórios incluem credenciais do Oracle e chaves AWS SES.
+   * Configurações SMTP opcionais são ignoradas por padrão, mas ficam
+     disponíveis para uso futuro.
 
-3. **Prepare directories**
-   * Place the source PDF(s) into `input/`.
-   * Output files will be generated in `output/` and moved to `sent/`
-     subfolders after email attempts.
+3. **Preparar diretórios**
+   * Coloque os PDFs fonte em `input/`.
+   * Os arquivos de saída serão gerados em `output/` e movidos para as
+     subpastas de `sent/` após as tentativas de envio.
 
-4. **Run the tool**
+4. **Executar a ferramenta**
    ```powershell
-   python main.py --split   # split PDFs
-   python main.py --send    # send emails
+   python main.py --split   # dividir PDFs
+   python main.py --send    # enviar e-mails
    python main.py --split --send
    ```
 
 5. **Logs**
-   * The application uses the standard `logging` module; messages appear
-     on the console with timestamps and log levels.
+   * A aplicação usa o módulo padrão `logging`; mensagens aparecem no
+     console e também são registradas em `informe.log` na raiz do
+     projeto. Você pode monitorar ou rotacionar esse arquivo conforme
+     necessário.
 
-## Code structure
+## Estrutura do código
 
 ```
-config/        # settings management
+config/        # gerenciamento de configurações
 src/
-  database.py  # Oracle access
-  email_sender.py # SES-based email helper
-  identifier.py   # CPF/CNPJ extractor
-  pdf_processor.py# PDF splitting logic
-main.py        # CLI entry point
-templates/     # HTML email template
-input/ output/ sent/  # working directories
+  database.py         # acesso ao Oracle
+  email_sender.py     # helper de e-mail via SES
+  identifier.py       # extrator CPF/CNPJ
+  pdf_processor.py    # lógica de divisão de PDF
+main.py               # ponto de entrada CLI
+templates/            # modelo de e-mail HTML
+input/ output/ sent/  # diretórios de trabalho
 ```
 
-## Suggestions for further improvement
+## Sugestões para melhoria
 
-* Automated tests (not included per current request).
-* Replace OracleDB with an interface for easier mocking.
-* Add a CLI argument for custom template paths.
-* Handle very large PDFs in streaming fashion.
+* Testes automatizados (não incluídos por solicitação atual).
+* Substituir OracleDB por uma interface para facilitar mocking.
+* Adicionar argumento CLI para caminho personalizado de template.
+* Tratar PDFs muito grandes de forma streaming.
 
-## License
+## Licença
 
-MIT-style (or whatever is appropriate). Ensure you do not commit
-sensitive information to the repository.
+Modelo MIT (ou outra apropriada). Certifique-se de não commitar
+informações sensíveis no repositório.

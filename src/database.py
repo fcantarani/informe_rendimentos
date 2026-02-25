@@ -1,8 +1,8 @@
 """
 src/database.py
 ---------------
-Oracle database access layer.
-Dependency: oracledb (pip install oracledb)
+Camada de acesso ao banco Oracle.
+Dependência: oracledb (pip install oracledb)
 """
 import logging
 
@@ -33,21 +33,22 @@ class OracleDB:
             )
             self.__cursor = self.__connection.cursor()
             if self.__log:
-                self.__log.info("Oracle connection established.")
+                self.__log.info("Conexão com Oracle estabelecida.")
             else:
-                logging.info("Oracle connection established.")
+                logging.info("Conexão com Oracle estabelecida.")
         except Exception as e:
             if self.__log:
-                self.__log.error(f"Connection error: {e}")
+                self.__log.error(f"Erro de conexão: {e}")
             else:
-                logging.error(f"Connection error: {e}")
+                logging.error(f"Erro de conexão: {e}")
             raise
 
     def ensure_connection(self):
-        """Check that connection is alive; reconnect if needed."""        try:
+        """Check that connection is alive; reconnect if needed."""
+        try:
             self.__connection.ping()
         except Exception:
-            logging.info("Reconnecting...")
+            logging.info("Reconectando...")
             self.__connect()
 
     def fechar(self):
@@ -57,7 +58,7 @@ class OracleDB:
                 self.__cursor.close()
             if self.__connection:
                 self.__connection.close()
-            logging.info("Oracle connection closed.")
+            logging.info("Conexão com Oracle encerrada.")
         except Exception:
             pass
         finally:
@@ -84,9 +85,9 @@ class OracleDB:
             return self.__cursor.fetchall()
         except Exception as e:
             if self.__log:
-                self.__log.error(f"Query execution error: {e}")
+                self.__log.error(f"Erro ao executar consulta: {e}")
             else:
-                logging.error(f"Query execution error: {e}")
+                logging.error(f"Erro ao executar consulta: {e}")
             return None
 
     def executar(self, query: str, params=None) -> list[dict]:
@@ -100,24 +101,25 @@ class OracleDB:
             return [dict(zip(colunas, row)) for row in self.__cursor.fetchall()]
         except Exception as e:
             if self.__log:
-                self.__log.error(f"Query execution error: {e}")
+                self.__log.error(f"Erro ao executar consulta: {e}")
             else:
-                logging.error(f"Query execution error: {e}")
+                logging.error(f"Erro ao executar consulta: {e}")
             return []
 
     def testar_conexao(self) -> bool:
-        """Run SELECT 1 FROM DUAL to verify the connection."""        resultado = self.execute_query("SELECT 1 FROM DUAL")
+        """Executa SELECT 1 FROM DUAL para verificar a conexão."""
+        resultado = self.execute_query("SELECT 1 FROM DUAL")
         if resultado is not None:
-            logging.info("[DB] connection OK. DUAL → %s", resultado)
+            logging.info("[DB] conexão OK. DUAL → %s", resultado)
             return True
-        logging.warning("[DB] connection failure.")
+        logging.warning("[DB] falha na conexão.")
         return False
 
     def get_account(self, registration: str) -> dict | None:
         """
-        Retrieve NAME and EMAIL of an account holder by normalized CPF/CNPJ.
-        `registration` must contain digits only (no '.', '/', '-').
-        Returns first matching record or None.
+        Recupera NOME e EMAIL de um correntista por CPF/CNPJ normalizado.
+        `registration` deve conter apenas dígitos (sem '.', '/', '-').
+        Retorna o primeiro registro correspondente ou None.
         """
         sql = "SELECT NOME, EMAIL FROM MATERA_CORRENTISTAS WHERE INSCRICAO = :1"
         rows = self.executar(sql, [registration])

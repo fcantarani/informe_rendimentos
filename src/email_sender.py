@@ -1,8 +1,8 @@
 """
 src/email_sender.py
 -------------------
-Sends emails via AWS SES using an HTML template and optional PDF attachment.
-Configuration is obtained from the shared `settings` object.
+Envia e-mails via AWS SES usando um modelo HTML e anexo PDF opcional.
+A configuração é obtida do objeto `settings` compartilhado.
 """
 
 from __future__ import annotations
@@ -21,11 +21,11 @@ from config.settings import settings
 
 class EmailSender:
     """
-    Sends HTML emails (template) with optional PDF attachment using AWS SES.
-    Configuration loaded from settings:
+    Envia e-mails HTML (modelo) com anexo PDF opcional usando AWS SES.
+    Configuração carregada de settings:
         AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, EMAIL_FROM
 
-    Template variables available:
+    Variáveis de modelo disponíveis:
         $customer_name, $company_name, $ano_atual
     """
 
@@ -44,7 +44,7 @@ class EmailSender:
     @staticmethod
     def _load_template(path: Path) -> Template:
         if not path.exists():
-            raise FileNotFoundError(f"Template not found: {path}")
+            raise FileNotFoundError(f"Modelo não encontrado: {path}")
         return Template(path.read_text(encoding="utf-8"))
 
     def _render(self, **variables: str) -> str:
@@ -91,25 +91,25 @@ class EmailSender:
     def send(
         self,
         recipient: str,
-        subject: str = "Income Report",
+        subject: str = "Informe de Rendimentos",
         attachment: Path | None = None,
         **template_vars: str,
     ) -> None:
         """
-        Send an email to the recipient with the rendered template.
+        Envia um e-mail ao destinatário com o modelo renderizado.
 
         Args:
-            recipient:            recipient's email address
-            subject:              subject of the email
-            attachment:           path to PDF attachment (optional)
-            **template_vars:      variables substituted in the HTML template
-                                  e.g. customer_name="Joao", company_name="XYZ"
+            recipient:            endereço de e-mail do destinatário
+            subject:              assunto do e-mail
+            attachment:           caminho do anexo PDF (opcional)
+            **template_vars:      variáveis substituídas no modelo HTML
+                                  ex. customer_name="Joao", company_name="XYZ"
         """
         # test mode redirect
         real_recipient = recipient
         if self._modo_teste:
             recipient = self._email_teste
-            logging.info("[TEST MODE] redirecting %s → %s", real_recipient, recipient)
+            logging.info("[MODO TESTE] redirecionando %s → %s", real_recipient, recipient)
 
         body_html = self._render(**template_vars)
         msg = self._build_message(recipient, subject, body_html, attachment)
@@ -122,14 +122,14 @@ class EmailSender:
                 RawMessage={"Data": msg.as_string()},
             )
             logging.info(
-                "[EMAIL] sent → %s%s | MessageId: %s",
+                "[EMAIL] enviado → %s%s | MessageId: %s",
                 recipient,
-                (f" (attachment: {attachment.name})" if attachment else ""),
+                (f" (anexo: {attachment.name})" if attachment else ""),
                 response["MessageId"],
             )
         except ClientError as e:
             logging.error(
-                "[ERROR] failed to send to %s: %s",
+                "[ERRO] falha ao enviar para %s: %s",
                 recipient,
                 e.response["Error"]["Message"],
             )

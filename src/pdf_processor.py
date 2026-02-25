@@ -1,8 +1,8 @@
 """
 src/pdf_processor.py
 --------------------
-Splits a PDF into individual files, grouping pages by CPF/CNPJ
-found in the content. Pages without an identifier inherit the previous one.
+Divide um PDF em arquivos individuais, agrupando páginas por CPF/CNPJ
+encontrado no conteúdo. Páginas sem identificador herdam o anterior.
 """
 
 from __future__ import annotations
@@ -40,8 +40,8 @@ class ProcessingResult:
 
 class PDFProcessor:
     """
-    Process a PDF file, grouping pages by CPF/CNPJ and writing
-    one output PDF per recipient in the target folder.
+    Processa um arquivo PDF, agrupando páginas por CPF/CNPJ e gravando
+    um PDF de saída por destinatário na pasta de destino.
     """
     def __init__(self, output_dir: Path) -> None:
         self.output_dir = output_dir
@@ -50,10 +50,10 @@ class PDFProcessor:
     # ── API pública ────────────────────────────────────────────────────────────
 
     def process(self, caminho_pdf: Path) -> ProcessingResult:
-        """Process the PDF and return a result summary."""
+        """Processa o PDF e retorna um resumo dos resultados."""
         if not caminho_pdf.exists():
-            logging.error("File not found: %s", caminho_pdf)
-            raise FileNotFoundError(f"{caminho_pdf} not found")
+            logging.error("Arquivo não encontrado: %s", caminho_pdf)
+            raise FileNotFoundError(f"{caminho_pdf} não encontrado")
 
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -61,8 +61,8 @@ class PDFProcessor:
         leitor   = pypdf.PdfReader(str(caminho_pdf))
         total    = len(leitor.pages)
 
-        logging.info("  File   : %s", caminho_pdf.name)
-        logging.info("  Pages  : %d", total)
+        logging.info("  Arquivo   : %s", caminho_pdf.name)
+        logging.info("  Páginas  : %d", total)
 
         groups_map  = self._group_pages(doc_fitz, total)
         doc_fitz.close()
@@ -80,8 +80,8 @@ class PDFProcessor:
         self, doc_fitz: fitz.Document, total: int
     ) -> dict[str, PageGroup]:
         """
-        First pass: read each page, extract identifier and group.
-        Pages without CPF/CNPJ inherit the previous identifier.
+        Primeira passagem: lê cada página, extrai o identificador e agrupa.
+        Páginas sem CPF/CNPJ herdam o identificador anterior.
         """
         groups: dict[str, PageGroup] = {}
         last_name: str | None = None
@@ -97,13 +97,13 @@ class PDFProcessor:
             elif last_name and last_id:
                 # inherits previous identifier
                 ident = last_id
-                logging.info("    [info] page %d: no id — grouped with '%s'", i + 1, last_name)
+                logging.info("    [info] página %d: sem id — agrupada com '%s'", i + 1, last_name)
             else:
                 # first page had no identifier
-                isolated_name = f"page_{i + 1}_no_identifier"
+                isolated_name = f"pagina_{i + 1}_sem_identificador"
                 ident = Identifier(valor=isolated_name, tipo="---")
                 logging.warning(
-                    "    [WARNING] Page %d: no identifier and no previous page → '%s.pdf'",
+                    "    [AVISO] Página %d: sem identificador e sem página anterior → '%s.pdf'",
                     i + 1,
                     isolated_name,
                 )
@@ -121,8 +121,9 @@ class PDFProcessor:
         leitor: pypdf.PdfReader,
     ) -> list[Path]:
         """
-        Second pass: write a PDF per group containing all grouped pages.
-        """        arquivos: list[Path] = []
+        Segunda passagem: grava um PDF por grupo contendo todas as páginas agrupadas.
+        """
+        arquivos: list[Path] = []
 
         for chave, grupo in groups.items():
             destino = self.output_dir / f"{chave}.pdf"
@@ -134,7 +135,7 @@ class PDFProcessor:
 
             paginas_str = ", ".join(str(p + 1) for p in grupo.indices)
             logging.info(
-                "    [%s] %s  (%d pages: %s)",
+                "    [%s] %s  (%d páginas: %s)",
                 grupo.identifier.tipo,
                 destino.name,
                 grupo.count,

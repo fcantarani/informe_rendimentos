@@ -1,0 +1,26 @@
+2026-02-25 20:21:51,458 INFO main.enviar: Conexão com Oracle estabelecida.
+2026-02-25 20:21:51,460 INFO main.enviar: 
+════════════════════════════════════════════════════════════
+2026-02-25 20:21:51,460 INFO main.enviar:   Enviando e-mails para 2 arquivo(s)...
+2026-02-25 20:21:51,461 INFO main.enviar: ════════════════════════════════════════════════════════════
+2026-02-25 20:21:51,468 INFO root: [MODO TESTE] redirecionando JMCOLLAR@MSN.COM → fabio.cantarani@globalhitss.com.br
+2026-02-25 20:21:51,978 INFO root: [EMAIL] enviado → fabio.cantarani@globalhitss.com.br (anexo: 132.821.928-35.pdf) | MessageId: 0103019c971e1041-1142d7e5-909f-4e7c-8d68-1962f8b977b6-000000
+2026-02-25 20:21:51,991 INFO root: [MODO TESTE] redirecionando FALECOMLUISGUSTAVO@HOTMAIL.COM → fabio.cantarani@globalhitss.com.br
+2026-02-25 20:21:52,374 INFO root: [EMAIL] enviado → fabio.cantarani@globalhitss.com.br (anexo: 320.254.048-32.pdf) | MessageId: 0103019c971e11b2-9ae419a1-0c27-42c6-9de9-2731355b1a69-000000
+2026-02-25 20:21:52,379 INFO main.enviar: 
+════════════════════════════════════════════════════════════
+2026-02-25 20:21:52,380 INFO main.enviar:   Enviados     : 2
+2026-02-25 20:21:52,381 INFO main.enviar:   Não encontrados / sem e-mail : 0
+2026-02-25 20:21:52,381 INFO main.enviar:   Erros        : 0
+2026-02-25 20:23:00,841 INFO main.enviar: Conexão com Oracle estabelecida.
+2026-02-25 20:23:00,842 INFO main.enviar: 
+════════════════════════════════════════════════════════════
+2026-02-25 20:23:00,843 INFO main.enviar:   Enviando e-mails para 2 arquivo(s)...
+2026-02-25 20:23:00,843 INFO main.enviar: ════════════════════════════════════════════════════════════
+2026-02-25 20:23:01,338 INFO root: [EMAIL] enviado → JMCOLLAR@MSN.COM (anexo: 132.821.928-35.pdf) | MessageId: 0103019c971f1f41-4de56448-c746-476d-8e9c-709df9b0f4ed-000000
+2026-02-25 20:23:01,748 INFO root: [EMAIL] enviado → FALECOMLUISGUSTAVO@HOTMAIL.COM (anexo: 320.254.048-32.pdf) | MessageId: 0103019c971f20b6-a930297b-c31b-476f-8ae8-a55f8ab1fe05-000000
+2026-02-25 20:23:01,751 INFO main.enviar: 
+════════════════════════════════════════════════════════════
+2026-02-25 20:23:01,751 INFO main.enviar:   Enviados     : 2
+2026-02-25 20:23:01,752 INFO main.enviar:   Não encontrados / sem e-mail : 0
+2026-02-25 20:23:01,752 INFO main.enviar:   Erros        : 0

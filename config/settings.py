@@ -12,7 +12,9 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Optional
 
-from pydantic import BaseSettings
+# pydantic 2+ moved BaseSettings into separate package
+# install 'pydantic-settings' which reexports the original class
+from pydantic_settings import BaseSettings
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -56,6 +58,7 @@ class Settings(BaseSettings):
     class Config:
         env_file = BASE_DIR / ".env"
         env_file_encoding = "utf-8"
+        extra = "ignore"  # allow unrelated env vars
 
 
 # single, shared settings object

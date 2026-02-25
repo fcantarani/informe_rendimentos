@@ -3,7 +3,8 @@ pymupdf       # text extraction from pages (fitz)
 pypdf         # PDF read/write
 
 # ── Environment / configuration
-pydantic      # type-safe settings management
+pydantic      # type-safe data validation
+pydantic-settings  # BaseSettings class for configuration (pydantic 2+)
 python-dotenv # load variables from .env file (legacy use)
 
 # ── Oracle ───────────────────────────────────────────────────────────────────────

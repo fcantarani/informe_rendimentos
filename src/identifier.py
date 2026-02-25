@@ -1,12 +1,12 @@
 """
 src/identifier.py
 -----------------
-Responsible for extracting CPF and CNPJ numbers from PDF page text.
+Responsável por extrair números de CPF e CNPJ do texto de páginas de PDF.
 
-Business rules for income reports:
-  * 2+ CNPJs → second CNPJ is recipient (company)
-  * 1 CNPJ   → ignore it; use CPF instead (individual recipient)
-  * 0 CNPJ   → use first CPF found
+Regras de negócio para informes de rendimento:
+  * ≥2 CNPJs → 2.º CNPJ é o destinatário (empresa)
+  * 1 CNPJ   → ignorar; usar CPF em vez (destinatário pessoa física)
+  * 0 CNPJ   → usar o primeiro CPF encontrado
 """
 import re
 from dataclasses import dataclass
