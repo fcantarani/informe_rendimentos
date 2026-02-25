@@ -1,0 +1,13 @@
+# ── PDF ───────────────────────────────────────────────────────────────────────
+pymupdf       # text extraction from pages (fitz)
+pypdf         # PDF read/write
+
+# ── Environment / configuration
+pydantic      # type-safe settings management
+python-dotenv # load variables from .env file (legacy use)
+
+# ── Oracle ───────────────────────────────────────────────────────────────────────
+oracledb      # driver Oracle thin-mode (sem Oracle Client)
+
+# ── AWS SES ──────────────────────────────────────────────────────────────────────
+boto3         # send emails via Amazon SES

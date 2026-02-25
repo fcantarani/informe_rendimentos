@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Income Report</title>
+  <style>
+    body      { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; padding:0; }
+    .container{ max-width:620px; margin:32px auto; background:#fff;
+                border-radius:8px; overflow:hidden;
+                box-shadow:0 2px 8px rgba(0,0,0,.12); }
+    .header   { background:#003087; color:#fff; padding:28px 32px; }
+    .header h1{ margin:0; font-size:20px; letter-spacing:.5px; }
+    .body     { padding:32px; color:#333; font-size:15px; line-height:1.7; }
+    .body p   { margin:0 0 16px; }
+    .signature { margin-top:28px; color:#555; font-size:14px; }
+    .footer   { background:#f4f4f4; color:#999; font-size:12px;
+                padding:16px 32px; text-align:center; border-top:1px solid #e0e0e0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="header">
+      <h1>Income Report</h1>
+    </div>
+
+    <div class="body">
+      <p>Hello, <strong>$customer_name</strong>,</p>
+
+      <p>
+        Here is the PDF of your Income Report. You can now file your tax return more easily.
+      </p>
+
+      <p>
+        Please note that cash prizes awarded during campaigns
+        (<strong>Turbo Account</strong>) are exempt from income tax, and only need
+        to be declared as shown on your income report.
+      </p>
+
+      <p>If you have any questions, do not hesitate to contact us.</p>
+
+      <div class="signature">
+        <p>Sincerely,<br/><strong>$company_name</strong></p>
+      </div>
+    </div>
+
+    <div class="footer">
+      This email was generated automatically. Please do not reply directly.<br/>
+      &copy; $ano_atual $company_name — All rights reserved.
+    </div>
+
+  </div>
+</body>
+</html>
