@@ -9,7 +9,9 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
+from datetime import datetime
 from pathlib import Path
+from time import perf_counter
 
 import fitz      # PyMuPDF — text extraction
 import pypdf     # pypdf   — PDF read/write
@@ -32,6 +34,9 @@ class ProcessingResult:
     total_pages: int
     groups: list[PageGroup]
     generated_files: list[Path] = field(default_factory=list)
+    started_at: datetime | None = None
+    finished_at: datetime | None = None
+    elapsed_seconds: float = 0.0
 
     @property
     def total_files(self) -> int:
@@ -55,6 +60,9 @@ class PDFProcessor:
             logging.error("Arquivo não encontrado: %s", caminho_pdf)
             raise FileNotFoundError(f"{caminho_pdf} não encontrado")
 
+        started_at = datetime.now()
+        started_perf = perf_counter()
+
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
         doc_fitz = fitz.open(str(caminho_pdf))
@@ -68,10 +76,16 @@ class PDFProcessor:
         doc_fitz.close()
 
         files = self._write_groups(groups_map, leitor)
+        finished_at = datetime.now()
+        elapsed_seconds = perf_counter() - started_perf
+
         return ProcessingResult(
             total_pages=total,
             groups=list(groups_map.values()),
             generated_files=files,
+            started_at=started_at,
+            finished_at=finished_at,
+            elapsed_seconds=elapsed_seconds,
         )
 
     # ── passos internos ────────────────────────────────────────────────────────

@@ -14,6 +14,8 @@ import logging
 import re
 import sys
 from pathlib import Path
+from time import perf_counter
+from datetime import datetime
 
 from config import settings
 from config.settings import (
@@ -44,17 +46,34 @@ def split_pdfs() -> list[Path]:
         sys.exit(0)
 
     processor = PDFProcessor(output_dir=OUTPUT_DIR)
-    arquivos_gerados: list[Path] = []
+    generated_files: list[Path] = []
+    batch_started_at = datetime.now()
+    batch_started_perf = perf_counter()
 
     for pdf in pdfs:
         logging.info("\n%s", '─' * 60)
-        resultado = processor.process(pdf)
-        arquivos_gerados.extend(resultado.generated_files)
-        logging.info("  Resumo: %d páginas → %d arquivos", resultado.total_pages, resultado.total_files)
+        result = processor.process(pdf)
+        generated_files.extend(result.generated_files)
+        logging.info("  Resumo: %d páginas → %d arquivos", result.total_pages, result.total_files)
+        logging.info(
+            "  Tempo   : início=%s | fim=%s | total=%.2fs",
+            result.started_at.strftime("%Y-%m-%d %H:%M:%S") if result.started_at else "-",
+            result.finished_at.strftime("%Y-%m-%d %H:%M:%S") if result.finished_at else "-",
+            result.elapsed_seconds,
+        )
+
+    batch_finished_at = datetime.now()
+    batch_elapsed = perf_counter() - batch_started_perf
 
     logging.info("\n%s", '═' * 60)
-    logging.info("  Total  : %d arquivo(s) em %s", len(arquivos_gerados), OUTPUT_DIR.resolve())
-    return arquivos_gerados
+    logging.info("  Total  : %d arquivo(s) em %s", len(generated_files), OUTPUT_DIR.resolve())
+    logging.info(
+        "  Processamento total: início=%s | fim=%s | total=%.2fs",
+        batch_started_at.strftime("%Y-%m-%d %H:%M:%S"),
+        batch_finished_at.strftime("%Y-%m-%d %H:%M:%S"),
+        batch_elapsed,
+    )
+    return generated_files
 
 
 # ── Module 2: Send Emails ───────────────────────────────────────────────────
@@ -104,7 +123,7 @@ def enviar_emails(files: list[Path] | None = None) -> None:
         try:
             sender.send(
                 recipient=email,
-                subject=f"Income Report {ano} — {company}",
+                subject=f"Informe de Rendimentos {ano} — {company}",
                 attachment=pdf,
                 customer_name=name,
                 company_name=company,
